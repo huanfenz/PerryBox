@@ -13,6 +13,9 @@ namespace perry {
 
     extern std::vector<uint8_t> ascii2Nums(const std::string& req);
     extern std::string nums2StrByBase(std::vector<uint8_t>& req, BaseEnum base);
+    extern std::vector<uint8_t> hexsStr2Nums(const std::string& req);
+    extern std::vector<uint8_t> decsStr2Nums(const std::string& req);
+    extern std::string nums2Ascii(const std::vector<uint8_t>& nums);
 }
 
 #endif // PERRYUTILS_H
