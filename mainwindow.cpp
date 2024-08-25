@@ -1,10 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "perry_utils.h"
+#include "ascii_converter.h"
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTextEdit>
+
+void MainWindow::setEditTextNoEvent(QTextEdit* edit, const QString& text)
+{
+    edit->blockSignals(true);
+    edit->setPlainText(text);
+    edit->blockSignals(false);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,63 +20,27 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // ascii 输入框改变事件
-    connect(ui->edit_ascii, &QTextEdit::textChanged, this, [=](){
-        qDebug() << "1111";
-        // 得到数值数组
-        QString asciiText = ui->edit_ascii->toPlainText();
-        std::vector<uint8_t> numVct = perry::ascii2Nums(asciiText.toStdString());
-
-        // 转换成十六进制字符串写入十六进制输入框
-        QString strHex = QString::fromStdString(perry::nums2StrByBase(numVct, perry::BaseEnum::BASE_HEX));
-        ui->edit_hex->blockSignals(true);
-        ui->edit_hex->setPlainText(strHex);
-        ui->edit_hex->blockSignals(false);
-
-        // 转换成十进制写入十进制输入框
-        QString strDec = QString::fromStdString(perry::nums2StrByBase(numVct, perry::BaseEnum::BASE_DEC));
-        ui->edit_dec->blockSignals(true);
-        ui->edit_dec->setPlainText(strDec);
-        ui->edit_dec->blockSignals(false);
+    connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
+        qDebug() << "edit_ascii changed";
+        perry::AsciiConverter asciiConverter(ui->edit_ascii->toPlainText().toStdString(), perry::InputTypeEnum::ASCII);
+        setEditTextNoEvent(ui->edit_hex, QString::fromStdString(asciiConverter.getHexStr()));
+        setEditTextNoEvent(ui->edit_dec, QString::fromStdString(asciiConverter.getDecStr()));
     });
 
     // hex 输入框改变事件
-    connect(ui->edit_hex, &QTextEdit::textChanged, this, [=](){
-        qDebug() << "2222";
-        // 得到数值数组
-        QString hexText = ui->edit_hex->toPlainText();
-        std::vector<uint8_t> numVct = perry::hexsStr2Nums(hexText.toStdString());
-
-        // 转换成十进制写入十进制输入框
-        QString strDec = QString::fromStdString(perry::nums2StrByBase(numVct, perry::BaseEnum::BASE_DEC));
-        ui->edit_dec->blockSignals(true);
-        ui->edit_dec->setPlainText(strDec);
-        ui->edit_dec->blockSignals(false);
-
-        // 转换成ASCII写入ASCII输入框
-        QString str = QString::fromStdString(perry::nums2Ascii(numVct));
-        ui->edit_ascii->blockSignals(true);
-        ui->edit_ascii->setPlainText(str);
-        ui->edit_ascii->blockSignals(false);
+    connect(ui->edit_hex, &QTextEdit::textChanged, this, [&](){
+        qDebug() << "edit_hex changed";
+        perry::AsciiConverter asciiConverter(ui->edit_hex->toPlainText().toStdString(), perry::InputTypeEnum::HEX);
+        setEditTextNoEvent(ui->edit_ascii, QString::fromStdString(asciiConverter.getAsciiStr()));
+        setEditTextNoEvent(ui->edit_dec, QString::fromStdString(asciiConverter.getDecStr()));
     });
 
     // dec 输入框改变事件
-    connect(ui->edit_dec, &QTextEdit::textChanged, this, [=](){
-        qDebug() << "3333";
-        // 得到数值数组
-        QString decText = ui->edit_dec->toPlainText();
-        std::vector<uint8_t> numVct = perry::decsStr2Nums(decText.toStdString());
-
-        // 转换成十六进制写入十进制输入框
-        QString strHex = QString::fromStdString(perry::nums2StrByBase(numVct, perry::BaseEnum::BASE_HEX));
-        ui->edit_hex->blockSignals(true);
-        ui->edit_hex->setPlainText(strHex);
-        ui->edit_hex->blockSignals(false);
-
-        // 转换成ASCII写入ASCII输入框
-        QString str = QString::fromStdString(perry::nums2Ascii(numVct));
-        ui->edit_ascii->blockSignals(true);
-        ui->edit_ascii->setPlainText(str);
-        ui->edit_ascii->blockSignals(false);
+    connect(ui->edit_dec, &QTextEdit::textChanged, this, [&](){
+        qDebug() << "edit_dec changed";
+        perry::AsciiConverter asciiConverter(ui->edit_dec->toPlainText().toStdString(), perry::InputTypeEnum::DEC);
+        setEditTextNoEvent(ui->edit_ascii, QString::fromStdString(asciiConverter.getAsciiStr()));
+        setEditTextNoEvent(ui->edit_hex, QString::fromStdString(asciiConverter.getHexStr()));
     });
 
     // 重置按钮事件

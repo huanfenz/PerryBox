@@ -1,0 +1,135 @@
+#include "ascii_converter.h"
+#include <iomanip>
+#include <QDebug>
+
+namespace perry {
+/* 判断一个单词是否是指定进制的字符串 */
+static bool isBaseStr(const std::string& str, BaseEnum base)
+{
+    if (str.empty()) return false;
+
+    bool(*judgeFunc)(char) = nullptr;
+    switch (base) {
+        case BaseEnum::DEC:
+            judgeFunc = [](char c) -> bool { return std::isdigit(c); };
+            break;
+        case BaseEnum::HEX:
+            judgeFunc = [](char c) -> bool { return std::isxdigit(c); };
+            break;
+        default:
+            throw std::out_of_range("base must be DEC or HEX");
+    }
+
+    for (char c : str) {
+        if (!judgeFunc(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/* 将一个 uint8_t 数字转换为指定进制的字符串 */
+static std::string num2BaseStr(uint8_t num, BaseEnum base)
+{
+    std::ostringstream oss;
+    switch (base) {
+        case BaseEnum::DEC:
+            oss << std::dec << static_cast<int>(num);
+            break;
+        case BaseEnum::HEX:
+            oss << std::hex << std::setw(2) <<std::setfill('0')
+                << static_cast<int>(num);
+            break;
+        default:
+            throw std::out_of_range("base must be DEC or HEX");
+    }
+    return oss.str();
+}
+
+/* ASCII字符串 转 数字数组 */
+static std::vector<uint8_t> asciiStr2Nums(const std::string& req)
+{
+    std::vector<uint8_t> res;
+    for (char c : req) {
+        res.push_back(static_cast<uint8_t>(c));
+    }
+    return res;
+}
+
+/* 数字数组 转 ASCII字符串 */
+static std::string nums2AsciiStr(const std::vector<uint8_t>& nums)
+{
+    std::string res;
+    for (const uint8_t& num : nums) {
+        res.push_back(static_cast<char>(num));
+    }
+    return res;
+}
+
+/* 数字数组 转 指定进制字符串 */
+static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base)
+{
+    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC)) {
+        throw std::out_of_range("base must be DEC or HEX");
+    }
+
+    std::ostringstream oss;
+    for (size_t i = 0; i < req.size(); ++i) {
+        if (i != 0) {
+            oss << " ";
+        }
+        oss << num2BaseStr(req[i], base);
+    }
+    return oss.str();
+}
+
+/* 指定进制字符串 转 数字数组 */
+static std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
+{
+    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC)) {
+        throw std::out_of_range("base must be DEC or HEX");
+    }
+
+    std::vector<uint8_t> result;
+    std::stringstream ss(req);
+    std::string each;
+
+    while (ss >> each) {
+        if (!isBaseStr(each, base)) {
+            break;
+        }
+        uint8_t value =
+                static_cast<uint8_t>(
+                    std::stoi(each, nullptr, static_cast<int>(base))
+                );
+        result.push_back(value);
+    }
+
+    return result;
+}
+
+/* ASCII转换器构造函数 */
+AsciiConverter::AsciiConverter(std::string str, InputTypeEnum type)
+{
+    switch (type) {
+        case InputTypeEnum::ASCII:
+            asciiStr = str;
+            nums = asciiStr2Nums(asciiStr);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            break;
+        case InputTypeEnum::DEC:
+            decStr = str;
+            nums = baseStr2Nums(decStr, BaseEnum::DEC);
+            asciiStr = nums2AsciiStr(nums);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            break;
+        case InputTypeEnum::HEX:
+            hexStr = str;
+            nums = baseStr2Nums(hexStr, BaseEnum::HEX);
+            asciiStr = nums2AsciiStr(nums);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+            break;
+    }
+}
+}

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,7 @@ public:
     ~MainWindow();
 
 private:
+    void setEditTextNoEvent(QTextEdit* edit, const QString& text);
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

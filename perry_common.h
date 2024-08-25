@@ -4,5 +4,8 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #endif // PERRY_COMMON_H
