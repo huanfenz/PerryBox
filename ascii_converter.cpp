@@ -108,28 +108,28 @@ static std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
     return result;
 }
 
-/* ASCII转换器构造函数 */
-AsciiConverter::AsciiConverter(std::string str, InputTypeEnum type)
-{
-    switch (type) {
-        case InputTypeEnum::ASCII:
-            asciiStr = str;
-            nums = asciiStr2Nums(asciiStr);
-            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
-            decStr = nums2BaseStr(nums, BaseEnum::DEC);
-            break;
-        case InputTypeEnum::DEC:
-            decStr = str;
-            nums = baseStr2Nums(decStr, BaseEnum::DEC);
-            asciiStr = nums2AsciiStr(nums);
-            decStr = nums2BaseStr(nums, BaseEnum::DEC);
-            break;
-        case InputTypeEnum::HEX:
-            hexStr = str;
-            nums = baseStr2Nums(hexStr, BaseEnum::HEX);
-            asciiStr = nums2AsciiStr(nums);
-            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
-            break;
-    }
+// 定义静态成员变量
+AsciiConverter AsciiConverter::instance;
+
+void AsciiConverter::setAsciiStr(const std::string& str) {
+    asciiStr = str;
+    nums = asciiStr2Nums(asciiStr);
+    hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+    decStr = nums2BaseStr(nums, BaseEnum::DEC);
 }
+
+void AsciiConverter::setHexStr(const std::string& str) {
+    hexStr = str;
+    nums = baseStr2Nums(hexStr, BaseEnum::HEX);
+    asciiStr = nums2AsciiStr(nums);
+    decStr = nums2BaseStr(nums, BaseEnum::DEC);
+}
+
+void AsciiConverter::setDecStr(const std::string& str) {
+    decStr = str;
+    nums = baseStr2Nums(decStr, BaseEnum::DEC);
+    asciiStr = nums2AsciiStr(nums);
+    hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+}
+
 }

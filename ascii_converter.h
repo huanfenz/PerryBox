@@ -18,13 +18,28 @@ enum class InputTypeEnum : uint8_t {
 
 class AsciiConverter {
 public:
-    AsciiConverter(std::string str, InputTypeEnum type);
+    // 提供静态方法，返回对象
+    static AsciiConverter& getInstance() {
+        return instance;
+    }
 
+    void setAsciiStr(const std::string& str);
+    void setHexStr(const std::string& str);
+    void setDecStr(const std::string& str);
     std::string getAsciiStr() const { return asciiStr; }
     std::string getHexStr() const { return hexStr; }
     std::string getDecStr() const { return decStr; }
 
 private:
+    // 私有构造函数
+    AsciiConverter() = default;
+    // 禁止拷贝构造和赋值语句
+    AsciiConverter(const AsciiConverter&) = delete;
+    AsciiConverter& operator=(const AsciiConverter&) = delete;
+
+    // 声明静态成员变量
+    static AsciiConverter instance;
+
     std::string asciiStr;
     std::vector<uint8_t> nums;
     std::string hexStr;

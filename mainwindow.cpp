@@ -19,10 +19,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // 获取ASCII转换器单例对象
+    perry::AsciiConverter& asciiConverter = perry::AsciiConverter::getInstance();
+
     // ascii 输入框改变事件
     connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
         qDebug() << "edit_ascii changed";
-        perry::AsciiConverter asciiConverter(ui->edit_ascii->toPlainText().toStdString(), perry::InputTypeEnum::ASCII);
+        asciiConverter.setAsciiStr(ui->edit_ascii->toPlainText().toStdString());
         setEditTextNoEvent(ui->edit_hex, QString::fromStdString(asciiConverter.getHexStr()));
         setEditTextNoEvent(ui->edit_dec, QString::fromStdString(asciiConverter.getDecStr()));
     });
@@ -30,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     // hex 输入框改变事件
     connect(ui->edit_hex, &QTextEdit::textChanged, this, [&](){
         qDebug() << "edit_hex changed";
-        perry::AsciiConverter asciiConverter(ui->edit_hex->toPlainText().toStdString(), perry::InputTypeEnum::HEX);
+        asciiConverter.setHexStr(ui->edit_hex->toPlainText().toStdString());
         setEditTextNoEvent(ui->edit_ascii, QString::fromStdString(asciiConverter.getAsciiStr()));
         setEditTextNoEvent(ui->edit_dec, QString::fromStdString(asciiConverter.getDecStr()));
     });
@@ -38,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     // dec 输入框改变事件
     connect(ui->edit_dec, &QTextEdit::textChanged, this, [&](){
         qDebug() << "edit_dec changed";
-        perry::AsciiConverter asciiConverter(ui->edit_dec->toPlainText().toStdString(), perry::InputTypeEnum::DEC);
+        asciiConverter.setDecStr(ui->edit_dec->toPlainText().toStdString());
         setEditTextNoEvent(ui->edit_ascii, QString::fromStdString(asciiConverter.getAsciiStr()));
         setEditTextNoEvent(ui->edit_hex, QString::fromStdString(asciiConverter.getHexStr()));
     });
