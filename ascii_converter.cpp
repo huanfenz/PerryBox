@@ -1,5 +1,6 @@
 #include "ascii_converter.h"
 #include <iomanip>
+#include <regex>
 #include <QDebug>
 
 namespace perry {
@@ -110,6 +111,50 @@ static std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
 
 // 定义静态成员变量
 AsciiConverter AsciiConverter::instance;
+
+bool AsciiConverter::checkHexStrValid(const std::string str)
+{
+    if (str.empty()) return true;
+
+    // 匹配不带 0x 前缀的十六进制数，每个单词最多 2 个十六进制字符
+    std::regex pattern1(R"(^\s*[0-9a-fA-F]{1,2}(\s+[0-9a-fA-F]{1,2})*\s*$)");
+    // 匹配带 0x 前缀的十六进制数，每个单词最多 2 个十六进制字符
+    std::regex pattern2(R"(^\s*0x[0-9a-fA-F]{1,2}(\s+0x[0-9a-fA-F]{1,2})*\s*$)");
+    // 校验格式
+    bool formatCorrect = std::regex_match(str, pattern1) || std::regex_match(str, pattern2);
+
+    if (!formatCorrect) {
+        return false;
+    }
+
+    return true;
+}
+
+bool AsciiConverter::checkDecStrValid(const std::string str)
+{
+    if (str.empty()) return true;
+
+    // 匹配以空格分隔的十进制数，每个数最多3位数字
+    std::regex pattern(R"(^\s*\d{1,3}(\s+\d{1,3})*\s*$)");
+    bool formatCorrect = std::regex_match(str, pattern);
+
+    if (!formatCorrect) {
+        return false;
+    }
+
+    // 使用字符串流逐个检查数字是否在0到255之间
+    std::istringstream stream(str);
+    std::string word;
+
+    while (stream >> word) {
+        int number = std::stoi(word);
+        if (number < 0 || number > 255) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 void AsciiConverter::setAsciiStr(const std::string& str) {
     asciiStr = str;

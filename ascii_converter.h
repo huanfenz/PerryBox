@@ -7,13 +7,8 @@ enum class BaseEnum : uint8_t {
     BIN = 2,
     OCT = 8,
     DEC = 10,
-    HEX = 16
-};
-
-enum class InputTypeEnum : uint8_t {
-    ASCII = 0,
-    DEC = 10,
-    HEX = 16
+    HEX = 16,
+    ASCII = 0xFF,
 };
 
 class AsciiConverter {
@@ -22,6 +17,9 @@ public:
     static AsciiConverter& getInstance() {
         return instance;
     }
+
+    static bool checkHexStrValid(const std::string str);
+    static bool checkDecStrValid(const std::string str);
 
     void setAsciiStr(const std::string& str);
     void setHexStr(const std::string& str);
