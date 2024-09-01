@@ -23,6 +23,7 @@ private:
     static void setEditTextNoEvent(QTextEdit* const edit, const QString& text);
 
     void asciiConverterPage();
+    void timestampConverterPage();
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

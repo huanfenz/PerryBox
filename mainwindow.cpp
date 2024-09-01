@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ascii_converter.h"
+#include "timestamp_converter.h"
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
@@ -26,6 +27,7 @@ void MainWindow::asciiConverterPage()
         asciiConverter.setAsciiStr(str);
         setEditTextNoEvent(ui->edit_hex, TO_QSTR(asciiConverter.getHexStr()));
         setEditTextNoEvent(ui->edit_dec, TO_QSTR(asciiConverter.getDecStr()));
+        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
     });
 
     // hex 输入框改变事件
@@ -41,6 +43,7 @@ void MainWindow::asciiConverterPage()
         asciiConverter.setHexStr(ui->edit_hex->toPlainText().toStdString());
         setEditTextNoEvent(ui->edit_ascii, TO_QSTR(asciiConverter.getAsciiStr()));
         setEditTextNoEvent(ui->edit_dec, TO_QSTR(asciiConverter.getDecStr()));
+        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
     });
 
     // dec 输入框改变事件
@@ -56,15 +59,64 @@ void MainWindow::asciiConverterPage()
         asciiConverter.setDecStr(str);
         setEditTextNoEvent(ui->edit_ascii, TO_QSTR(asciiConverter.getAsciiStr()));
         setEditTextNoEvent(ui->edit_hex, TO_QSTR(asciiConverter.getHexStr()));
+        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
     });
 
     // 重置按钮事件
-    connect(ui->btn_reset, &QPushButton::clicked, this, [=](){
+    connect(ui->btn_reset_ascii, &QPushButton::clicked, this, [&](){
         ui->edit_ascii->setPlainText("");
         ui->edit_hex->setPlainText("");
         ui->edit_dec->setPlainText("");
         ui->label_info_ascii->setText("");
     });
+}
+
+void MainWindow::timestampConverterPage()
+{
+    // 初始化显示当前时间
+    std::time_t now = std::time(nullptr);
+    ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
+    std::string localtimeStr = perry::timestamp2LocaltimeStr(now);
+    ui->edit_cur_localtime->setText(TO_QSTR(localtimeStr));
+    std::string utctimeStr = perry::timestampToUtctimeStr(now);
+    ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
+
+    // 更新当前时间事件
+    connect(ui->btn_update_cur_time, &QPushButton::clicked, this, [&](){
+        std::time_t now = std::time(nullptr);
+        ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
+        std::string timeStr = perry::timestamp2LocaltimeStr(now);
+        ui->edit_cur_localtime->setText(TO_QSTR(timeStr));
+        std::string utctimeStr = perry::timestampToUtctimeStr(now);
+        ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
+    });
+
+#if 0
+    // 时间戳转换
+    connect(ui->btn_timestamp, &QPushButton::clicked, this, [&](){
+        std::string reqStr = ui->edit_timestamp->text().toStdString();
+        // 获取时间戳
+        std::time_t timestamp = static_cast<std::time_t>(std::stoll(reqStr));
+        // 转换成人类可读设置
+        std::string timeStr = perry::timestamp2LocaltimeStr(timestamp);
+        ui->edit_localtime->setText(TO_QSTR(timeStr));
+    });
+
+    // 本地时间转换
+    connect(ui->btn_localtime, &QPushButton::clicked, this, [&](){
+        std::string reqStr = ui->edit_localtime->text().toStdString();
+        // 获取时间戳
+        std::time_t timestamp = perry::localtime2Timestamp(reqStr);
+        // 直接显示
+        ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
+    });
+
+    // 重置按钮事件
+    connect(ui->btn_reset_timestamp, &QPushButton::clicked, this, [&](){
+        ui->edit_timestamp->setText("");
+        ui->edit_localtime->setText("");
+    });
+#endif
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -80,6 +132,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Ascii 转换器页面
     asciiConverterPage();
+
+    // Timestamp 转换器页面
+    timestampConverterPage();
 }
 
 MainWindow::~MainWindow()

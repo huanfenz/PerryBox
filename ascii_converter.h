@@ -27,6 +27,9 @@ public:
     std::string getAsciiStr() const { return asciiStr; }
     std::string getHexStr() const { return hexStr; }
     std::string getDecStr() const { return decStr; }
+    uint32_t getCharSize() {
+        return asciiStr.size();
+    }
 
 private:
     // 私有构造函数

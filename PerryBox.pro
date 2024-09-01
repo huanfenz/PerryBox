@@ -23,7 +23,8 @@ SOURCES += \
 HEADERS += \
     ascii_converter.h \
     mainwindow.h \
-    perry_common.h
+    perry_common.h \
+    timestamp_converter.h
 
 FORMS += \
     mainwindow.ui
