@@ -78,7 +78,7 @@ void MainWindow::timestampConverterPage()
     ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
     std::string localtimeStr = perry::timestamp2LocaltimeStr(now);
     ui->edit_cur_localtime->setText(TO_QSTR(localtimeStr));
-    std::string utctimeStr = perry::timestampToUtctimeStr(now);
+    std::string utctimeStr = perry::timestamp2UtctimeStr(now);
     ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
 
     // 更新当前时间事件
@@ -87,19 +87,21 @@ void MainWindow::timestampConverterPage()
         ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
         std::string timeStr = perry::timestamp2LocaltimeStr(now);
         ui->edit_cur_localtime->setText(TO_QSTR(timeStr));
-        std::string utctimeStr = perry::timestampToUtctimeStr(now);
+        std::string utctimeStr = perry::timestamp2UtctimeStr(now);
         ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
-    });
+    });    
 
-#if 0
     // 时间戳转换
     connect(ui->btn_timestamp, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_timestamp->text().toStdString();
         // 获取时间戳
         std::time_t timestamp = static_cast<std::time_t>(std::stoll(reqStr));
-        // 转换成人类可读设置
+        // 转换成本地时间
         std::string timeStr = perry::timestamp2LocaltimeStr(timestamp);
         ui->edit_localtime->setText(TO_QSTR(timeStr));
+        // 转换成UTC时间
+        std::string utcTimeStr = perry::timestamp2UtctimeStr(timestamp);
+        ui->edit_utctime->setText(TO_QSTR(utcTimeStr));
     });
 
     // 本地时间转换
@@ -109,14 +111,30 @@ void MainWindow::timestampConverterPage()
         std::time_t timestamp = perry::localtime2Timestamp(reqStr);
         // 直接显示
         ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
+        // 转换成UTC时间
+        std::string utcTimeStr = perry::timestamp2UtctimeStr(timestamp);
+        ui->edit_utctime->setText(TO_QSTR(utcTimeStr));
+    });
+
+    // UTC时间转换
+    connect(ui->btn_utctime, &QPushButton::clicked, this, [&](){
+        qDebug() << "111";
+        std::string reqStr = ui->edit_utctime->text().toStdString();
+        // 获取时间戳
+        std::time_t timestamp = perry::utctime2Timestamp(reqStr);
+        // 直接显示
+        ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
+        // 转换成本地时间
+        std::string timeStr = perry::timestamp2LocaltimeStr(timestamp);
+        ui->edit_localtime->setText(TO_QSTR(timeStr));
     });
 
     // 重置按钮事件
     connect(ui->btn_reset_timestamp, &QPushButton::clicked, this, [&](){
         ui->edit_timestamp->setText("");
         ui->edit_localtime->setText("");
+        ui->edit_utctime->setText("");
     });
-#endif
 }
 
 MainWindow::MainWindow(QWidget *parent)
