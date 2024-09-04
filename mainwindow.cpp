@@ -83,6 +83,7 @@ void MainWindow::timestampConverterPage()
 
     // 更新当前时间事件
     connect(ui->btn_update_cur_time, &QPushButton::clicked, this, [&](){
+        ui->label_info_timestamp->setText("");
         std::time_t now = std::time(nullptr);
         ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
         std::string timeStr = perry::timestamp2LocaltimeStr(now);
@@ -94,6 +95,11 @@ void MainWindow::timestampConverterPage()
     // 时间戳转换
     connect(ui->btn_timestamp, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_timestamp->text().toStdString();
+        if (!perry::isValidTimestamp(reqStr)) {
+            ui->label_info_timestamp->setText("输入格式不合法或超出范围");
+            return;
+        }
+        ui->label_info_timestamp->setText("");
         // 获取时间戳
         std::time_t timestamp = static_cast<std::time_t>(std::stoll(reqStr));
         // 转换成本地时间
@@ -107,8 +113,17 @@ void MainWindow::timestampConverterPage()
     // 本地时间转换
     connect(ui->btn_localtime, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_localtime->text().toStdString();
+        if (!perry::isValidTimeStr(reqStr)) {
+            ui->label_info_timestamp->setText("输入格式不合法或超出范围");
+            return;
+        }
         // 获取时间戳
         std::time_t timestamp = perry::localtime2Timestamp(reqStr);
+        if (timestamp < 0) {
+            ui->label_info_timestamp->setText("输入超出范围");
+            return;
+        }
+        ui->label_info_timestamp->setText("");
         // 直接显示
         ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
         // 转换成UTC时间
@@ -118,10 +133,18 @@ void MainWindow::timestampConverterPage()
 
     // UTC时间转换
     connect(ui->btn_utctime, &QPushButton::clicked, this, [&](){
-        qDebug() << "111";
         std::string reqStr = ui->edit_utctime->text().toStdString();
+        if (!perry::isValidTimeStr(reqStr)) {
+            ui->label_info_timestamp->setText("输入格式不合法或超出范围");
+            return;
+        }
         // 获取时间戳
         std::time_t timestamp = perry::utctime2Timestamp(reqStr);
+        if (timestamp < 0) {
+            ui->label_info_timestamp->setText("输入超出范围");
+            return;
+        }
+        ui->label_info_timestamp->setText("");
         // 直接显示
         ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
         // 转换成本地时间

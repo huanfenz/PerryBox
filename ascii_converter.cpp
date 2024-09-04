@@ -4,6 +4,7 @@
 #include <QDebug>
 
 namespace perry {
+#if 0
 /* 判断一个单词是否是指定进制的字符串 */
 static bool isBaseStr(const std::string& str, BaseEnum base)
 {
@@ -28,6 +29,7 @@ static bool isBaseStr(const std::string& str, BaseEnum base)
     }
     return true;
 }
+#endif
 
 /* 将一个 uint8_t 数字转换为指定进制的字符串 */
 static std::string num2BaseStr(uint8_t num, BaseEnum base)
@@ -96,9 +98,11 @@ static std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
     std::string each;
 
     while (ss >> each) {
+#if 0
         if (!isBaseStr(each, base)) {
             break;
         }
+#endif
         uint8_t value =
                 static_cast<uint8_t>(
                     std::stoi(each, nullptr, static_cast<int>(base))

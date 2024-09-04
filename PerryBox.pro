@@ -18,7 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     ascii_converter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    timestamp_converter.cpp
 
 HEADERS += \
     ascii_converter.h \
