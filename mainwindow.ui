@@ -39,7 +39,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_ascii">
        <attribute name="title">
@@ -205,6 +205,16 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbox_hex_prefix">
+             <property name="text">
+              <string>是否添加0x前缀</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_info_ascii">
@@ -397,7 +407,7 @@
               <string notr="true">color: rgb(255, 0, 0);</string>
              </property>
              <property name="text">
-              <string>          </string>
+              <string/>
              </property>
             </widget>
            </item>
@@ -434,7 +444,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

@@ -72,7 +72,7 @@ static std::string nums2AsciiStr(const std::vector<uint8_t>& nums)
 }
 
 /* 数字数组 转 指定进制字符串 */
-static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base)
+static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base, bool hasPrefix)
 {
     if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC)) {
         throw std::out_of_range("base must be DEC or HEX");
@@ -83,7 +83,11 @@ static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base)
         if (i != 0) {
             oss << " ";
         }
-        oss << num2BaseStr(req[i], base);
+        if (base == BaseEnum::HEX && hasPrefix) {
+            oss << "0x" << num2BaseStr(req[i], base);
+        } else {
+            oss << num2BaseStr(req[i], base);
+        }
     }
     return oss.str();
 }
@@ -169,8 +173,8 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
         case BaseEnum::ASCII:
             asciiStr = str;
             nums = asciiStr2Nums(asciiStr);
-            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
-            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX, hasPrefix);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC, hasPrefix);
             break;
         case BaseEnum::HEX:
             if (!checkHexStrValid(str)) {
@@ -179,7 +183,7 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
             hexStr = str;
             nums = baseStr2Nums(hexStr, BaseEnum::HEX);
             asciiStr = nums2AsciiStr(nums);
-            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC, hasPrefix);
             break;
         case BaseEnum::DEC:
             if (!checkDecStrValid(str)) {
@@ -188,7 +192,7 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
             decStr = str;
             nums = baseStr2Nums(decStr, BaseEnum::DEC);
             asciiStr = nums2AsciiStr(nums);
-            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX, hasPrefix);
             break;
     }
 

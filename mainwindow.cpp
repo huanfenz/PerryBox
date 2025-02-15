@@ -77,6 +77,13 @@ void MainWindow::asciiConverterPage()
         ui->edit_dec->setPlainText("");
         ui->label_info_ascii->setText("");
     });
+
+    // 切换十六进制前缀
+    connect(ui->cbox_hex_prefix, &QCheckBox::toggled, this, [&](bool checked){
+        AsciiConverter& asciiConverter = AsciiConverter::getInstance();
+        asciiConverter.togglePrefix(checked);
+        handleEditChanged(BaseEnum::ASCII);
+    });
 }
 
 void MainWindow::timestampConverterPage()

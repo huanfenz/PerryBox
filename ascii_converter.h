@@ -22,6 +22,9 @@ public:
     bool setStrByType(const std::string& str, BaseEnum base);
     // 根据类型获取字符串
     std::string getStrByType(BaseEnum base);
+    void togglePrefix(bool hasPrefix) {
+        this->hasPrefix = hasPrefix;
+    };
 
     uint32_t getCharSize() {
         return asciiStr.size();
@@ -40,6 +43,8 @@ private:
     std::vector<uint8_t> nums;
     std::string hexStr;
     std::string decStr;
+
+    bool hasPrefix = true;
 };
 }
 
