@@ -4,6 +4,8 @@
 #include <QDebug>
 
 namespace perry {
+
+/****************************** 工具函数 ****************************************/
 #if 0
 /* 判断一个单词是否是指定进制的字符串 */
 static bool isBaseStr(const std::string& str, BaseEnum base)
@@ -113,10 +115,7 @@ static std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
     return result;
 }
 
-// 定义静态成员变量
-AsciiConverter AsciiConverter::instance;
-
-bool AsciiConverter::checkHexStrValid(const std::string str)
+static bool checkHexStrValid(const std::string str)
 {
     if (str.empty()) return true;
 
@@ -134,7 +133,7 @@ bool AsciiConverter::checkHexStrValid(const std::string str)
     return true;
 }
 
-bool AsciiConverter::checkDecStrValid(const std::string str)
+static bool checkDecStrValid(const std::string str)
 {
     if (str.empty()) return true;
 
@@ -160,25 +159,52 @@ bool AsciiConverter::checkDecStrValid(const std::string str)
     return true;
 }
 
-void AsciiConverter::setAsciiStr(const std::string& str) {
-    asciiStr = str;
-    nums = asciiStr2Nums(asciiStr);
-    hexStr = nums2BaseStr(nums, BaseEnum::HEX);
-    decStr = nums2BaseStr(nums, BaseEnum::DEC);
+/****************************** AsciiConverter类的内容 ****************************************/
+
+// 定义静态成员变量
+AsciiConverter AsciiConverter::instance;
+
+bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
+    switch (base) {
+        case BaseEnum::ASCII:
+            asciiStr = str;
+            nums = asciiStr2Nums(asciiStr);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            break;
+        case BaseEnum::HEX:
+            if (!checkHexStrValid(str)) {
+                return false;
+            }
+            hexStr = str;
+            nums = baseStr2Nums(hexStr, BaseEnum::HEX);
+            asciiStr = nums2AsciiStr(nums);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC);
+            break;
+        case BaseEnum::DEC:
+            if (!checkDecStrValid(str)) {
+                return false;
+            }
+            decStr = str;
+            nums = baseStr2Nums(decStr, BaseEnum::DEC);
+            asciiStr = nums2AsciiStr(nums);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+            break;
+    }
+
+    return true;
 }
 
-void AsciiConverter::setHexStr(const std::string& str) {
-    hexStr = str;
-    nums = baseStr2Nums(hexStr, BaseEnum::HEX);
-    asciiStr = nums2AsciiStr(nums);
-    decStr = nums2BaseStr(nums, BaseEnum::DEC);
-}
-
-void AsciiConverter::setDecStr(const std::string& str) {
-    decStr = str;
-    nums = baseStr2Nums(decStr, BaseEnum::DEC);
-    asciiStr = nums2AsciiStr(nums);
-    hexStr = nums2BaseStr(nums, BaseEnum::HEX);
+std::string AsciiConverter::getStrByType(BaseEnum base)
+{
+    switch (base) {
+        case BaseEnum::ASCII:
+            return asciiStr;
+        case BaseEnum::HEX:
+            return hexStr;
+        case BaseEnum::DEC:
+            return decStr;
+    }
 }
 
 }

@@ -18,15 +18,11 @@ public:
         return instance;
     }
 
-    static bool checkHexStrValid(const std::string str);
-    static bool checkDecStrValid(const std::string str);
+    // 根据类型设置字符串，返回false则校验不通过
+    bool setStrByType(const std::string& str, BaseEnum base);
+    // 根据类型获取字符串
+    std::string getStrByType(BaseEnum base);
 
-    void setAsciiStr(const std::string& str);
-    void setHexStr(const std::string& str);
-    void setDecStr(const std::string& str);
-    std::string getAsciiStr() const { return asciiStr; }
-    std::string getHexStr() const { return hexStr; }
-    std::string getDecStr() const { return decStr; }
     uint32_t getCharSize() {
         return asciiStr.size();
     }
@@ -37,7 +33,6 @@ private:
     // 禁止拷贝构造和赋值语句
     AsciiConverter(const AsciiConverter&) = delete;
     AsciiConverter& operator=(const AsciiConverter&) = delete;
-
     // 声明静态成员变量
     static AsciiConverter instance;
 

@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ascii_converter.h"
 #include "timestamp_converter.h"
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTextEdit>
+
+using namespace perry;
 
 void MainWindow::setEditTextNoEvent(QTextEdit* const edit, const QString& text)
 {
@@ -14,52 +15,59 @@ void MainWindow::setEditTextNoEvent(QTextEdit* const edit, const QString& text)
     edit->blockSignals(false);
 }
 
+void MainWindow::handleEditChanged(BaseEnum base)
+{
+    AsciiConverter& asciiConverter = AsciiConverter::getInstance();
+    std::map<BaseEnum, QTextEdit*> updateMap = {
+        { BaseEnum::ASCII,  ui->edit_ascii },
+        { BaseEnum::HEX,    ui->edit_hex },
+        { BaseEnum::DEC,    ui->edit_dec },
+    };
+
+    if (updateMap.find(base) == updateMap.end()) {
+        return;
+    }
+    QTextEdit* currEdit = updateMap[base];
+
+    // 从edit获取str
+    std::string str = currEdit->toPlainText().toStdString();
+
+    // 设置字符串，转换器会自动转换，返回false表示校验失败
+    bool vaild = asciiConverter.setStrByType(str, base);
+    if (!vaild) {
+        ui->label_info_ascii->setText("格式错误，请检查");
+        return;
+    } else {
+        ui->label_info_ascii->setText("");
+    }
+
+    // 设置除了自己的其他edit
+    for (const auto& pair : updateMap) {
+        if (pair.first == base) {
+            continue;
+        }
+        setEditTextNoEvent(pair.second, TO_QSTR(asciiConverter.getStrByType(pair.first)));
+    }
+
+    // 设置字符长度text
+    ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
+}
+
 void MainWindow::asciiConverterPage()
 {
-    // 获取ASCII转换器单例对象
-    perry::AsciiConverter& asciiConverter = perry::AsciiConverter::getInstance();
-
     // ascii 输入框改变事件
     connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
-        qDebug() << "edit_ascii changed";
-        ui->label_info_ascii->setText("");
-        std::string str = ui->edit_ascii->toPlainText().toStdString();
-        asciiConverter.setAsciiStr(str);
-        setEditTextNoEvent(ui->edit_hex, TO_QSTR(asciiConverter.getHexStr()));
-        setEditTextNoEvent(ui->edit_dec, TO_QSTR(asciiConverter.getDecStr()));
-        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
+        handleEditChanged(BaseEnum::ASCII);
     });
 
     // hex 输入框改变事件
     connect(ui->edit_hex, &QTextEdit::textChanged, this, [&](){
-        qDebug() << "edit_hex changed";
-        std::string str = ui->edit_hex->toPlainText().toStdString();
-        if (!perry::AsciiConverter::checkHexStrValid(str)) {
-            ui->label_info_ascii->setText("格式错误，请检查");
-            return;
-        } else {
-            ui->label_info_ascii->setText("");
-        }
-        asciiConverter.setHexStr(ui->edit_hex->toPlainText().toStdString());
-        setEditTextNoEvent(ui->edit_ascii, TO_QSTR(asciiConverter.getAsciiStr()));
-        setEditTextNoEvent(ui->edit_dec, TO_QSTR(asciiConverter.getDecStr()));
-        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
+        handleEditChanged(BaseEnum::HEX);
     });
 
     // dec 输入框改变事件
     connect(ui->edit_dec, &QTextEdit::textChanged, this, [&](){
-        qDebug() << "edit_dec changed";
-        std::string str = ui->edit_dec->toPlainText().toStdString();
-        if (!perry::AsciiConverter::checkDecStrValid(str)) {
-            ui->label_info_ascii->setText("格式错误，请检查");
-            return;
-        } else {
-            ui->label_info_ascii->setText("");
-        }
-        asciiConverter.setDecStr(str);
-        setEditTextNoEvent(ui->edit_ascii, TO_QSTR(asciiConverter.getAsciiStr()));
-        setEditTextNoEvent(ui->edit_hex, TO_QSTR(asciiConverter.getHexStr()));
-        ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
+        handleEditChanged(BaseEnum::DEC);
     });
 
     // 重置按钮事件
@@ -76,9 +84,9 @@ void MainWindow::timestampConverterPage()
     // 初始化显示当前时间
     std::time_t now = std::time(nullptr);
     ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
-    std::string localtimeStr = perry::timestamp2LocaltimeStr(now);
+    std::string localtimeStr = timestamp2LocaltimeStr(now);
     ui->edit_cur_localtime->setText(TO_QSTR(localtimeStr));
-    std::string utctimeStr = perry::timestamp2UtctimeStr(now);
+    std::string utctimeStr = timestamp2UtctimeStr(now);
     ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
 
     // 更新当前时间事件
@@ -86,16 +94,16 @@ void MainWindow::timestampConverterPage()
         ui->label_info_timestamp->setText("");
         std::time_t now = std::time(nullptr);
         ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
-        std::string timeStr = perry::timestamp2LocaltimeStr(now);
+        std::string timeStr = timestamp2LocaltimeStr(now);
         ui->edit_cur_localtime->setText(TO_QSTR(timeStr));
-        std::string utctimeStr = perry::timestamp2UtctimeStr(now);
+        std::string utctimeStr = timestamp2UtctimeStr(now);
         ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
     });    
 
     // 时间戳转换
     connect(ui->btn_timestamp, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_timestamp->text().toStdString();
-        if (!perry::isValidTimestamp(reqStr)) {
+        if (!isValidTimestamp(reqStr)) {
             ui->label_info_timestamp->setText("输入格式不合法或超出范围");
             return;
         }
@@ -103,22 +111,22 @@ void MainWindow::timestampConverterPage()
         // 获取时间戳
         std::time_t timestamp = static_cast<std::time_t>(std::stoll(reqStr));
         // 转换成本地时间
-        std::string timeStr = perry::timestamp2LocaltimeStr(timestamp);
+        std::string timeStr = timestamp2LocaltimeStr(timestamp);
         ui->edit_localtime->setText(TO_QSTR(timeStr));
         // 转换成UTC时间
-        std::string utcTimeStr = perry::timestamp2UtctimeStr(timestamp);
+        std::string utcTimeStr = timestamp2UtctimeStr(timestamp);
         ui->edit_utctime->setText(TO_QSTR(utcTimeStr));
     });
 
     // 本地时间转换
     connect(ui->btn_localtime, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_localtime->text().toStdString();
-        if (!perry::isValidTimeStr(reqStr)) {
+        if (!isValidTimeStr(reqStr)) {
             ui->label_info_timestamp->setText("输入格式不合法或超出范围");
             return;
         }
         // 获取时间戳
-        std::time_t timestamp = perry::localtime2Timestamp(reqStr);
+        std::time_t timestamp = localtime2Timestamp(reqStr);
         if (timestamp < 0) {
             ui->label_info_timestamp->setText("输入超出范围");
             return;
@@ -127,19 +135,19 @@ void MainWindow::timestampConverterPage()
         // 直接显示
         ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
         // 转换成UTC时间
-        std::string utcTimeStr = perry::timestamp2UtctimeStr(timestamp);
+        std::string utcTimeStr = timestamp2UtctimeStr(timestamp);
         ui->edit_utctime->setText(TO_QSTR(utcTimeStr));
     });
 
     // UTC时间转换
     connect(ui->btn_utctime, &QPushButton::clicked, this, [&](){
         std::string reqStr = ui->edit_utctime->text().toStdString();
-        if (!perry::isValidTimeStr(reqStr)) {
+        if (!isValidTimeStr(reqStr)) {
             ui->label_info_timestamp->setText("输入格式不合法或超出范围");
             return;
         }
         // 获取时间戳
-        std::time_t timestamp = perry::utctime2Timestamp(reqStr);
+        std::time_t timestamp = utctime2Timestamp(reqStr);
         if (timestamp < 0) {
             ui->label_info_timestamp->setText("输入超出范围");
             return;
@@ -148,7 +156,7 @@ void MainWindow::timestampConverterPage()
         // 直接显示
         ui->edit_timestamp->setText(TO_QSTR(std::to_string(timestamp)));
         // 转换成本地时间
-        std::string timeStr = perry::timestamp2LocaltimeStr(timestamp);
+        std::string timeStr = timestamp2LocaltimeStr(timestamp);
         ui->edit_localtime->setText(TO_QSTR(timeStr));
     });
 
