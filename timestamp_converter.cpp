@@ -31,6 +31,7 @@ namespace perry {
 
         // 如果格式不匹配，直接返回 false
         if (!std::regex_match(input, match, pattern)) {
+            qDebug() << "格式不匹配";
             return false;
         }
 
@@ -45,6 +46,7 @@ namespace perry {
         // 检查时间的合法性
         if (year < 0 || month < 1 || month > 12 || day < 1 || hour < 0 || hour > 23 ||
             minute < 0 || minute > 59 || second < 0 || second > 59) {
+            qDebug() << "年月日超过范围";
             return false;
         }
 
@@ -54,11 +56,13 @@ namespace perry {
 
         // 检查天数是否在该月范围内
         if (day > daysInMonth[month - 1]) {
+            qDebug() << "日超过范围";
             return false;
         }
 
         // 检查1970年
         if (year < 1970) {
+            qDebug() << "年小于1970";
             return false;
         }
 
@@ -103,11 +107,10 @@ namespace perry {
         if (iss.fail()) {
             throw std::invalid_argument("Invalid time format");
         }
-        // 使用mktime将tm结构体转换为本地时间戳
-        std::time_t localTime = std::mktime(&tm);
-        // 获取本地时区和UTC的时差
-        std::time_t utcOffset = std::difftime(localTime, std::mktime(std::gmtime(&localTime)));
-        // 将本地时间戳加上时差，得到UTC时间戳
-        return localTime + utcOffset;
+#if defined(_WIN32)
+        return _mkgmtime(&tm);
+#else
+        return timegm(&tm);
+#endif
     }
 }

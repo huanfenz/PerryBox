@@ -9,8 +9,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-#define APP_VERSION "0.0.3"
+#define APP_VERSION "0.0.4"
 #define TO_QSTR(str) QString::fromStdString(str)
+#define NUM_TO_QSTR(num) QString::number(num)
 
 class MainWindow : public QMainWindow
 {

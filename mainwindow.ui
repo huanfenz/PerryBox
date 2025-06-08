@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>900</height>
+    <width>400</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>850</width>
-    <height>900</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="font">
@@ -39,7 +39,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_ascii">
        <attribute name="title">
@@ -63,7 +63,7 @@
          <widget class="QTextEdit" name="edit_ascii">
           <property name="font">
            <font>
-            <family>等线</family>
+            <family>Consolas</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -89,7 +89,7 @@
          <widget class="QTextEdit" name="edit_hex">
           <property name="font">
            <font>
-            <family>等线</family>
+            <family>Consolas</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -115,7 +115,7 @@
          <widget class="QTextEdit" name="edit_dec">
           <property name="font">
            <font>
-            <family>等线</family>
+            <family>Consolas</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -138,6 +138,12 @@
             <widget class="QLineEdit" name="edit_char_size">
              <property name="enabled">
               <bool>true</bool>
+             </property>
+             <property name="font">
+              <font>
+               <family>Consolas</family>
+               <pointsize>10</pointsize>
+              </font>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -243,137 +249,58 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>时间戳类型</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QRadioButton" name="radioButton">
-             <property name="text">
-              <string>秒级</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="radioButton_2">
-             <property name="text">
-              <string>毫秒级</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <widget class="QWidget" name="widget_3" native="true">
           <layout class="QGridLayout" name="gridLayout">
-           <item row="4" column="2">
-            <widget class="QPushButton" name="btn_timestamp">
-             <property name="text">
-              <string>转换</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="edit_cur_utctime">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>当前时间戳：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="edit_cur_localtime">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="2">
+           <item row="5" column="2">
             <widget class="QPushButton" name="btn_utctime">
              <property name="text">
               <string>转换</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="2" rowspan="3">
-            <widget class="QPushButton" name="btn_update_cur_time">
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="edit_timestamp"/>
+           </item>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="btn_timestamp">
              <property name="text">
-              <string>
-
-更新当前时间
-
-</string>
+              <string>转换</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>当前时间（UTC）：</string>
-             </property>
-            </widget>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="edit_localtime"/>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>当前时间（本地）：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="2">
+           <item row="4" column="2">
             <widget class="QPushButton" name="btn_localtime">
              <property name="text">
               <string>转换</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="edit_utctime"/>
+           </item>
+           <item row="5" column="0">
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>时间（UTC）：</string>
+              <string>时间(UTC):</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>时间（本地）：</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
+           <item row="2" column="0">
             <widget class="QLabel" name="label_8">
              <property name="text">
               <string>时间戳：</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="1">
-            <widget class="QLineEdit" name="edit_utctime"/>
-           </item>
-           <item row="4" column="1">
-            <widget class="QLineEdit" name="edit_timestamp"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="edit_cur_timestamp">
-             <property name="readOnly">
-              <bool>true</bool>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>时间(本地):</string>
              </property>
             </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QLineEdit" name="edit_localtime"/>
            </item>
           </layout>
          </widget>
@@ -381,6 +308,13 @@
         <item>
          <widget class="QWidget" name="widget_4" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="btn_update_time">
+             <property name="text">
+              <string>更新为当前时间</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QPushButton" name="btn_reset_timestamp">
              <property name="text">
@@ -403,6 +337,12 @@
            </item>
            <item>
             <widget class="QLabel" name="label_info_timestamp">
+             <property name="font">
+              <font>
+               <family>等线</family>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="styleSheet">
               <string notr="true">color: rgb(255, 0, 0);</string>
              </property>
@@ -443,8 +383,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
-     <height>19</height>
+     <width>400</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

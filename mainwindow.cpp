@@ -90,22 +90,22 @@ void MainWindow::timestampConverterPage()
 {
     // 初始化显示当前时间
     std::time_t now = std::time(nullptr);
-    ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
+    ui->edit_timestamp->setText(TO_QSTR(std::to_string(now)));
     std::string localtimeStr = timestamp2LocaltimeStr(now);
-    ui->edit_cur_localtime->setText(TO_QSTR(localtimeStr));
+    ui->edit_localtime->setText(TO_QSTR(localtimeStr));
     std::string utctimeStr = timestamp2UtctimeStr(now);
-    ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
+    ui->edit_utctime->setText(TO_QSTR(utctimeStr));
 
     // 更新当前时间事件
-    connect(ui->btn_update_cur_time, &QPushButton::clicked, this, [&](){
+    connect(ui->btn_update_time, &QPushButton::clicked, this, [&](){
         ui->label_info_timestamp->setText("");
         std::time_t now = std::time(nullptr);
-        ui->edit_cur_timestamp->setText(TO_QSTR(std::to_string(now)));
+        ui->edit_timestamp->setText(TO_QSTR(std::to_string(now)));
         std::string timeStr = timestamp2LocaltimeStr(now);
-        ui->edit_cur_localtime->setText(TO_QSTR(timeStr));
+        ui->edit_localtime->setText(TO_QSTR(timeStr));
         std::string utctimeStr = timestamp2UtctimeStr(now);
-        ui->edit_cur_utctime->setText(TO_QSTR(utctimeStr));
-    });    
+        ui->edit_utctime->setText(TO_QSTR(utctimeStr));
+    });
 
     // 时间戳转换
     connect(ui->btn_timestamp, &QPushButton::clicked, this, [&](){
@@ -180,6 +180,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/Image/BirdIcon4.png"));
 
     // 版本信息
     connect(ui->actionUpdateInfo, &QAction::triggered, this, [&](){

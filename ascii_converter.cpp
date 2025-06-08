@@ -66,7 +66,12 @@ static std::string nums2AsciiStr(const std::vector<uint8_t>& nums)
 {
     std::string res;
     for (const uint8_t& num : nums) {
-        res.push_back(static_cast<char>(num));
+        unsigned char ch = static_cast<unsigned char>(num);
+        if (std::isprint(ch)) {
+            res.push_back(ch);
+        } else {
+            res += u8"\u25A1";  // 输出：▯
+        }
     }
     return res;
 }
