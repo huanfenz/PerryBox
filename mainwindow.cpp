@@ -184,7 +184,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 版本信息
     connect(ui->actionUpdateInfo, &QAction::triggered, this, [&](){
-        QMessageBox::information(nullptr, "版本信息", "当前版本：" APP_VERSION "，欢迎使用");
+        QMessageBox::information(nullptr, "版本信息", "当前版本：" APP_VERSION "，Created By Perry.\n"
+                                 "0.4版本更新日志：\n"
+                                 "1. 添加图标, 优化不同分辨率缩放的显示\n"
+                                 "2. ASCII转换器：不可显示字符添加方框显示\n"
+                                 "3. 时间戳转换器：基本完善");
     });
 
     // Ascii 转换器页面
