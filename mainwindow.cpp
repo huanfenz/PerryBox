@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTextEdit>
+#include <QSyntaxHighlighter>
 
 using namespace perry;
 
@@ -53,8 +54,75 @@ void MainWindow::handleEditChanged(BaseEnum base)
     ui->edit_char_size->setText(QString::number(asciiConverter.getCharSize()));
 }
 
+class EditHexHighlighter : public QSyntaxHighlighter
+{
+public:
+    explicit EditHexHighlighter(QTextDocument* doc)
+        : QSyntaxHighlighter(doc) {}
+
+protected:
+    static bool isHexChar(QChar c)
+    {
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+    }
+
+    static int hexVal(QChar c)
+    {
+        if (c >= '0' && c <= '9') return c.unicode() - '0';
+        if (c >= 'a' && c <= 'f') return c.unicode() - 'a' + 10;
+        if (c >= 'A' && c <= 'F') return c.unicode() - 'A' + 10;
+        return -1;
+    }
+
+    static bool isAsciiPrintable(uint8_t v)
+    {
+        return v >= 0x20 && v <= 0x7E;
+    }
+
+    void highlightBlock(const QString& text) override
+    {
+        QTextCharFormat warnFmt;
+        warnFmt.setForeground(QColor("#E67E22")); // 橙色
+
+        for (int i = 0; i < text.size(); )
+        {
+            // 0xAB
+            if (i + 3 < text.size() && text[i] == '0' && text[i + 1] == 'x' && isHexChar(text[i + 2]) && isHexChar(text[i + 3]))
+            {
+                int h = hexVal(text[i + 2]);
+                int l = hexVal(text[i + 3]);
+                uint8_t v = (h << 4) | l;
+
+                if (!isAsciiPrintable(v))
+                    setFormat(i, 4, warnFmt);
+
+                i += 4;
+                continue;
+            }
+
+            // AB
+            if (i + 1 < text.size() && isHexChar(text[i]) && isHexChar(text[i + 1]))
+            {
+                int h = hexVal(text[i]);
+                int l = hexVal(text[i + 1]);
+                uint8_t v = (h << 4) | l;
+
+                if (!isAsciiPrintable(v))
+                    setFormat(i, 2, warnFmt);
+
+                i += 2;
+                continue;
+            }
+
+            ++i;
+        }
+    }
+};
+
 void MainWindow::asciiConverterPage()
 {
+    new EditHexHighlighter(ui->edit_hex->document());
+
     // ascii 输入框改变事件
     connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
         handleEditChanged(BaseEnum::ASCII);
