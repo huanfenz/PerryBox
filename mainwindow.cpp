@@ -377,6 +377,9 @@ MainWindow::MainWindow(QWidget *parent)
     // 版本信息
     connect(ui->actionUpdateInfo, &QAction::triggered, this, [&](){
         QMessageBox::information(nullptr, "版本信息", "当前版本：" APP_VERSION "，Created By Perry.\n"
+                                 "0.5版本更新日志：\n"
+                                 "1. Fix Some Bugs\n"
+                                 "2. ASCII转换器：不可显示字符添加橙色背景显示\n"
                                  "0.4版本更新日志：\n"
                                  "1. 添加图标, 优化不同分辨率缩放的显示\n"
                                  "2. ASCII转换器：不可显示字符添加方框显示\n"

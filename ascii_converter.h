@@ -27,7 +27,7 @@ public:
     };
 
     uint32_t getCharSize() {
-        return asciiStr.size();
+        return nums.size();
     }
 
 private:
