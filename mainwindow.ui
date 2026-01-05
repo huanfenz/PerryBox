@@ -47,6 +47,13 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;备注：不可打印字符会显示橙色背景&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label">
           <property name="font">
            <font>
@@ -81,7 +88,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;十六进制（不可显示字符显示为橙色）：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;十六进制：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -107,7 +114,7 @@
            </font>
           </property>
           <property name="text">
-           <string> 十进制：</string>
+           <string>十进制：</string>
           </property>
          </widget>
         </item>
@@ -130,7 +137,7 @@
            <item>
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>字符长度（ 字节）：</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;字符长度（字节数量）：&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>

@@ -82,7 +82,9 @@ protected:
     void highlightBlock(const QString& text) override
     {
         QTextCharFormat warnFmt;
-        warnFmt.setForeground(QColor("#E67E22")); // 橙色
+//        warnFmt.setForeground(QColor("#E67E22")); // 橙色
+        warnFmt.setBackground(QColor(255, 220, 180)); // 浅橙
+        warnFmt.setForeground(Qt::black);             // 字体仍然可读
 
         for (int i = 0; i < text.size(); )
         {
@@ -119,9 +121,131 @@ protected:
     }
 };
 
+class EditDecHighlighter : public QSyntaxHighlighter
+{
+public:
+    explicit EditDecHighlighter(QTextDocument* doc)
+        : QSyntaxHighlighter(doc) {}
+
+protected:
+    static bool isDecChar(QChar c)
+    {
+        return (c >= '0' && c <= '9');
+    }
+
+    static int decVal(QChar c)
+    {
+        if (c >= '0' && c <= '9') {
+            return c.unicode() - '0';
+        }
+        return -1;
+    }
+
+    static bool isAsciiPrintable(uint8_t v)
+    {
+        return v >= 0x20 && v <= 0x7E;
+    }
+
+    void highlightBlock(const QString& text) override
+    {
+        QTextCharFormat warnFmt;
+//        warnFmt.setForeground(QColor("#E67E22")); // 橙色
+        warnFmt.setBackground(QColor(255, 220, 180)); // 浅橙
+        warnFmt.setForeground(Qt::black);             // 字体仍然可读
+
+        for (int i = 0; i < text.size(); )
+        {
+            // xxx
+            if (i + 2 < text.size() && isDecChar(text[i]) && isDecChar(text[i + 1]) && isDecChar(text[i + 2])) {
+                int a = decVal(text[i]);
+                int b = decVal(text[i + 1]);
+                int c = decVal(text[i + 2]);
+                int value = a * 100 + b * 10 + c;
+                if (value < 0 || value > 255) {
+                    i += 3;
+                    continue;
+                }
+                uint8_t v = value;
+                if (!isAsciiPrintable(v)) {
+                    setFormat(i, 3, warnFmt);
+                }
+                i += 3;
+                continue;
+            }
+
+            // xx
+            if (i + 1 < text.size() && isDecChar(text[i]) && isDecChar(text[i + 1])) {
+                int a = decVal(text[i]);
+                int b = decVal(text[i + 1]);
+                int value = a * 10 + b;
+                if (value < 0) {
+                    i += 2;
+                    continue;
+                }
+                uint8_t v = value;
+                if (!isAsciiPrintable(v)) {
+                    setFormat(i, 2, warnFmt);
+                }
+                i += 2;
+                continue;
+            }
+
+            // x
+            if (isDecChar(text[i])) {
+                int value = decVal(text[i]);
+                if (value < 0) {
+                    ++i;
+                    continue;
+                }
+                uint8_t v = value;
+                if (!isAsciiPrintable(v))
+                    setFormat(i, 1, warnFmt);
+                ++i;
+                continue;
+            }
+
+            ++i;
+        }
+    }
+};
+
+class EditAsciiHighlighter : public QSyntaxHighlighter
+{
+public:
+    explicit EditAsciiHighlighter(QTextDocument* doc)
+        : QSyntaxHighlighter(doc) {}
+
+protected:
+    static bool isAsciiPrintable(QChar c)
+    {
+        ushort u = c.unicode();
+        return (u >= 0x20 && u <= 0x7E);
+    }
+
+    void highlightBlock(const QString& text) override
+    {
+        QTextCharFormat warnFmt;
+        warnFmt.setBackground(QColor(255, 220, 180)); // 浅橙
+        warnFmt.setForeground(Qt::black);             // 字体仍然可读
+
+        for (int i = 0; i < text.size(); ++i)
+        {
+            QChar c = text[i];
+
+            // 非 ASCII 或不可打印
+            if (!isAsciiPrintable(c))
+            {
+                setFormat(i, 1, warnFmt);
+            }
+        }
+    }
+};
+
 void MainWindow::asciiConverterPage()
 {
     new EditHexHighlighter(ui->edit_hex->document());
+    new EditDecHighlighter(ui->edit_dec->document());
+    new EditAsciiHighlighter(ui->edit_ascii->document());
 
     // ascii 输入框改变事件
     connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
