@@ -52,14 +52,14 @@ static std::string num2BaseStr(uint8_t num, BaseEnum base)
 }
 
 /* ASCII字符串 转 数字数组 */
-static std::vector<uint8_t> asciiStr2Nums(const std::string& req)
-{
-    std::vector<uint8_t> res;
-    for (char c : req) {
-        res.push_back(static_cast<uint8_t>(c));
-    }
-    return res;
-}
+//static std::vector<uint8_t> asciiStr2Nums(const std::string& req)
+//{
+//    std::vector<uint8_t> res;
+//    for (char c : req) {
+//        res.push_back(static_cast<uint8_t>(c));
+//    }
+//    return res;
+//}
 
 /* 数字数组 转 ASCII字符串 */
 static std::string nums2AsciiStr(const std::vector<uint8_t>& nums)

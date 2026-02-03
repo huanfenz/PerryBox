@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "timestamp_converter.h"
+#include "crc_calculator.h"
 #include <QString>
 #include <QDebug>
 #include <QMessageBox>
@@ -367,6 +368,20 @@ void MainWindow::timestampConverterPage()
     });
 }
 
+void MainWindow::crcCalculatorPage()
+{
+    // 时间戳转换
+    connect(ui->btn_crc_calc, &QPushButton::clicked, this, [&](){
+        // 获取输入
+        std::string inputStr = ui->pedit_crc_input->getPaintContext();
+        std::vector<uint8_t> inputNums
+        // 获取crc模型
+        int crcModelIndex = ui->cbox_crc_model->currentIndex();
+        calcCRC();
+
+    });
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -377,6 +392,8 @@ MainWindow::MainWindow(QWidget *parent)
     // 版本信息
     connect(ui->actionUpdateInfo, &QAction::triggered, this, [&](){
         QMessageBox::information(nullptr, "版本信息", "当前版本：" APP_VERSION "，Created By Perry.\n"
+                                 "0.6版本更新日志：\n"
+                                 "1. crc计算器基本实现\n"
                                  "0.5版本更新日志：\n"
                                  "1. Fix Some Bugs\n"
                                  "2. ASCII转换器：不可显示字符添加橙色背景显示\n"
@@ -391,6 +408,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Timestamp 转换器页面
     timestampConverterPage();
+
+    // CRC 计算器页面
+    crcCalculatorPage();
 }
 
 MainWindow::~MainWindow()

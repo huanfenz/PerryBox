@@ -27,6 +27,7 @@ private:
     void handleEditChanged(perry::BaseEnum base);
     void asciiConverterPage();
     void timestampConverterPage();
+    void crcCalculatorPage();
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
