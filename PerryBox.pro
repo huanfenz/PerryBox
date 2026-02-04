@@ -17,12 +17,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ascii_converter.cpp \
+    crc_calculator.cpp \
     main.cpp \
     mainwindow.cpp \
+    perry_common.cpp \
     timestamp_converter.cpp
 
 HEADERS += \
     ascii_converter.h \
+    crc_calculator.h \
     mainwindow.h \
     perry_common.h \
     timestamp_converter.h

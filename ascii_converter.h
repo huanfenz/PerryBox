@@ -3,14 +3,6 @@
 #include "perry_common.h"
 
 namespace perry {
-enum class BaseEnum : uint8_t {
-    BIN = 2,
-    OCT = 8,
-    DEC = 10,
-    HEX = 16,
-    ASCII = 0xFF,
-};
-
 class AsciiConverter {
 public:
     // 提供静态方法，返回对象

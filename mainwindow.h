@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QTextEdit>
-#include <ascii_converter.h>
+#include <perry_common.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,9 +24,10 @@ public:
 private:
     static void setEditTextNoEvent(QTextEdit* const edit, const QString& text);
 
-    void handleEditChanged(perry::BaseEnum base);
+    void handleEditChanged(BaseEnum base);
     void asciiConverterPage();
     void timestampConverterPage();
+    void crcCalculatorPage();
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
