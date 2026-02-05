@@ -386,12 +386,12 @@ void MainWindow::crcCalculatorPage()
         {
             case 0: {// crc8
                 uint8_t value = calcCRC8(inputNums);
-                res = fmt::format("{:X}", value);
+                res = fmt::format("{:02X}", value);
                 break;
             }
             case 1: {// crc32
-                uint32_t value = calcCRC8(inputNums);
-                res = fmt::format("{:X}", value);
+                uint32_t value = calcCRC32(inputNums);
+                res = fmt::format("{:08X}", value);
                 break;
             }
             default:
