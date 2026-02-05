@@ -4,6 +4,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
+# fmt library
+INCLUDEPATH += $$PWD/thirdparty/fmt-12.1.0/include
+SOURCES += $$PWD/thirdparty/fmt-12.1.0/src/format.cc
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the

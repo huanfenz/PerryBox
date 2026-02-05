@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <fmt/format.h>
 
 enum class BaseEnum : uint8_t {
     BIN = 2,

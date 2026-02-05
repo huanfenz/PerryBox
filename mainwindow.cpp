@@ -373,15 +373,11 @@ void MainWindow::timestampConverterPage()
 
 void MainWindow::crcCalculatorPage()
 {
-    // 时间戳转换
     connect(ui->btn_crc_calc, &QPushButton::clicked, this, [&](){
         // 获取输入
         std::string inputStr = ui->pedit_crc_input->toPlainText().toStdString();
         std::vector<uint8_t> inputNums = baseStr2Nums(inputStr, BaseEnum::HEX);
 
-        for (uint8_t num : inputNums) {
-            qDebug() << num;
-        }
         // 获取crc模型
         int crcModelIndex = ui->cbox_crc_model->currentIndex();
 
@@ -390,22 +386,12 @@ void MainWindow::crcCalculatorPage()
         {
             case 0: {// crc8
                 uint8_t value = calcCRC8(inputNums);
-
-                std::stringstream ss;
-                ss << std::hex << std::uppercase
-                   << std::setw(2) << std::setfill('0')
-                   << static_cast<int>(value);
-                res = ss.str();   // "AF"
+                res = fmt::format("{:X}", value);
                 break;
             }
             case 1: {// crc32
                 uint32_t value = calcCRC8(inputNums);
-
-                std::stringstream ss;
-                ss << std::hex << std::uppercase
-                   << std::setw(8) << std::setfill('0')
-                   << static_cast<int>(value);
-                res = ss.str();   // "AAAF"
+                res = fmt::format("{:X}", value);
                 break;
             }
             default:
