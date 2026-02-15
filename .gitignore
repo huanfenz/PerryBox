@@ -63,6 +63,12 @@ Thumbs.db
 *.Debug
 *.Release
 
+# Build directory
+build/
+
+# MOC generated files
+moc_predefs.h
+
 # Python byte code
 *.pyc
 
