@@ -66,6 +66,9 @@ Thumbs.db
 # Build directory
 build/
 
+# VS Code config
+.vscode/
+
 # MOC generated files
 moc_predefs.h
 
