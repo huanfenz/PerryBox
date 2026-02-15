@@ -182,6 +182,10 @@ std::string AsciiConverter::getStrByType(BaseEnum base)
             return hexStr;
         case BaseEnum::DEC:
             return decStr;
+        case BaseEnum::BIN:
+        case BaseEnum::OCT:
+        default:
+            return "";
     }
 }
 
