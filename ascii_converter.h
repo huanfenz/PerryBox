@@ -35,6 +35,7 @@ private:
     std::vector<uint8_t> nums;
     std::string hexStr;
     std::string decStr;
+    std::string binStr;
 
     bool hasPrefix = true;
 };

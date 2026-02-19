@@ -1,5 +1,6 @@
 #include "ascii_converter.h"
 #include <iomanip>
+#include <bitset>
 #include <regex>
 #include <QDebug>
 
@@ -45,8 +46,11 @@ static std::string num2BaseStr(uint8_t num, BaseEnum base)
             oss << std::hex << std::setw(2) <<std::setfill('0')
                 << static_cast<int>(num);
             break;
+        case BaseEnum::BIN:
+            oss << std::bitset<8>(num);
+            break;
         default:
-            throw std::out_of_range("base must be DEC or HEX");
+            throw std::out_of_range("base must be DEC, HEX or BIN");
     }
     return oss.str();
 }
@@ -75,8 +79,8 @@ static std::string nums2AsciiStr(const std::vector<uint8_t>& nums)
 /* 数字数组 转 指定进制字符串 */
 static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base, bool hasPrefix)
 {
-    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC)) {
-        throw std::out_of_range("base must be DEC or HEX");
+    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC) && (base != BaseEnum::BIN)) {
+        throw std::out_of_range("base must be DEC, HEX or BIN");
     }
 
     std::ostringstream oss;
@@ -86,6 +90,8 @@ static std::string nums2BaseStr(std::vector<uint8_t>& req, BaseEnum base, bool h
         }
         if (base == BaseEnum::HEX && hasPrefix) {
             oss << "0x" << num2BaseStr(req[i], base);
+        } else if (base == BaseEnum::BIN && hasPrefix) {
+            oss << "0b" << num2BaseStr(req[i], base);
         } else {
             oss << num2BaseStr(req[i], base);
         }
@@ -137,6 +143,24 @@ static bool checkDecStrValid(const std::string str)
     return true;
 }
 
+static bool checkBinStrValid(const std::string str)
+{
+    if (str.empty()) return true;
+
+    // 匹配不带 0b 前缀的二进制数，每个单词最多 8 个二进制字符
+    std::regex pattern1(R"(^\s*[01]{1,8}(\s+[01]{1,8})*\s*$)");
+    // 匹配带 0b 前缀的二进制数，每个单词最多 8 个二进制字符
+    std::regex pattern2(R"(^\s*0b[01]{1,8}(\s+0b[01]{1,8})*\s*$)");
+    // 校验格式
+    bool formatCorrect = std::regex_match(str, pattern1) || std::regex_match(str, pattern2);
+
+    if (!formatCorrect) {
+        return false;
+    }
+
+    return true;
+}
+
 /****************************** AsciiConverter类的内容 ****************************************/
 
 // 定义静态成员变量
@@ -149,6 +173,7 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
             nums = asciiStr2Nums(asciiStr);
             hexStr = nums2BaseStr(nums, BaseEnum::HEX, hasPrefix);
             decStr = nums2BaseStr(nums, BaseEnum::DEC, hasPrefix);
+            binStr = nums2BaseStr(nums, BaseEnum::BIN, hasPrefix);
             break;
         case BaseEnum::HEX:
             if (!checkHexStrValid(str)) {
@@ -158,6 +183,7 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
             nums = baseStr2Nums(hexStr, BaseEnum::HEX);
             asciiStr = nums2AsciiStr(nums);
             decStr = nums2BaseStr(nums, BaseEnum::DEC, hasPrefix);
+            binStr = nums2BaseStr(nums, BaseEnum::BIN, hasPrefix);
             break;
         case BaseEnum::DEC:
             if (!checkDecStrValid(str)) {
@@ -167,6 +193,17 @@ bool AsciiConverter::setStrByType(const std::string& str, BaseEnum base) {
             nums = baseStr2Nums(decStr, BaseEnum::DEC);
             asciiStr = nums2AsciiStr(nums);
             hexStr = nums2BaseStr(nums, BaseEnum::HEX, hasPrefix);
+            binStr = nums2BaseStr(nums, BaseEnum::BIN, hasPrefix);
+            break;
+        case BaseEnum::BIN:
+            if (!checkBinStrValid(str)) {
+                return false;
+            }
+            binStr = str;
+            nums = baseStr2Nums(binStr, BaseEnum::BIN);
+            asciiStr = nums2AsciiStr(nums);
+            hexStr = nums2BaseStr(nums, BaseEnum::HEX, hasPrefix);
+            decStr = nums2BaseStr(nums, BaseEnum::DEC, hasPrefix);
             break;
     }
 
@@ -183,6 +220,7 @@ std::string AsciiConverter::getStrByType(BaseEnum base)
         case BaseEnum::DEC:
             return decStr;
         case BaseEnum::BIN:
+            return binStr;
         case BaseEnum::OCT:
         default:
             return "";

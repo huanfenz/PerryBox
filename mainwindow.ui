@@ -132,6 +132,32 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_bin">
+          <property name="font">
+           <font>
+            <family>等线</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>二进制：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="edit_bin">
+          <property name="font">
+           <font>
+            <family>Consolas</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="acceptRichText">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="widget_2" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
@@ -222,7 +248,7 @@
            <item>
             <widget class="QCheckBox" name="cbox_hex_prefix">
              <property name="text">
-              <string>是否添加0x前缀</string>
+              <string>是否添加0x/0b前缀</string>
              </property>
              <property name="checked">
               <bool>true</bool>

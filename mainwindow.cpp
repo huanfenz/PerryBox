@@ -28,6 +28,7 @@ void MainWindow::handleEditChanged(BaseEnum base)
         { BaseEnum::ASCII,  ui->edit_ascii },
         { BaseEnum::HEX,    ui->edit_hex },
         { BaseEnum::DEC,    ui->edit_dec },
+        { BaseEnum::BIN,    ui->edit_bin },
     };
 
     if (updateMap.find(base) == updateMap.end()) {
@@ -246,11 +247,89 @@ protected:
     }
 };
 
+class EditBinHighlighter : public QSyntaxHighlighter
+{
+public:
+    explicit EditBinHighlighter(QTextDocument* doc)
+        : QSyntaxHighlighter(doc) {}
+
+protected:
+    static bool isBinChar(QChar c)
+    {
+        return c == '0' || c == '1';
+    }
+
+    static bool isAsciiPrintable(uint8_t v)
+    {
+        return v >= 0x20 && v <= 0x7E;
+    }
+
+    void highlightBlock(const QString& text) override
+    {
+        QTextCharFormat warnFmt;
+        warnFmt.setBackground(QColor(255, 220, 180));
+        warnFmt.setForeground(Qt::black);
+
+        for (int i = 0; i < text.size(); )
+        {
+            if (text[i] == ' ')
+            {
+                ++i;
+                continue;
+            }
+
+            if (i + 1 < text.size() && text[i] == '0' && text[i + 1] == 'b')
+            {
+                int start = i;
+                i += 2;
+                int bitCount = 0;
+                uint8_t value = 0;
+
+                while (i < text.size() && isBinChar(text[i]) && bitCount < 8)
+                {
+                    value = (value << 1) | (text[i].unicode() - '0');
+                    ++bitCount;
+                    ++i;
+                }
+
+                if (bitCount > 0 && !isAsciiPrintable(value))
+                {
+                    setFormat(start, i - start, warnFmt);
+                }
+                continue;
+            }
+
+            if (isBinChar(text[i]))
+            {
+                int start = i;
+                int bitCount = 0;
+                uint8_t value = 0;
+
+                while (i < text.size() && isBinChar(text[i]) && bitCount < 8)
+                {
+                    value = (value << 1) | (text[i].unicode() - '0');
+                    ++bitCount;
+                    ++i;
+                }
+
+                if (bitCount > 0 && !isAsciiPrintable(value))
+                {
+                    setFormat(start, i - start, warnFmt);
+                }
+                continue;
+            }
+
+            ++i;
+        }
+    }
+};
+
 void MainWindow::asciiConverterPage()
 {
     new EditHexHighlighter(ui->edit_hex->document());
     new EditDecHighlighter(ui->edit_dec->document());
     new EditAsciiHighlighter(ui->edit_ascii->document());
+    new EditBinHighlighter(ui->edit_bin->document());
 
     // ascii 输入框改变事件
     connect(ui->edit_ascii, &QTextEdit::textChanged, this, [&](){
@@ -267,11 +346,17 @@ void MainWindow::asciiConverterPage()
         handleEditChanged(BaseEnum::DEC);
     });
 
+    // bin 输入框改变事件
+    connect(ui->edit_bin, &QTextEdit::textChanged, this, [&](){
+        handleEditChanged(BaseEnum::BIN);
+    });
+
     // 重置按钮事件
     connect(ui->btn_reset_ascii, &QPushButton::clicked, this, [&](){
         ui->edit_ascii->setPlainText("");
         ui->edit_hex->setPlainText("");
         ui->edit_dec->setPlainText("");
+        ui->edit_bin->setPlainText("");
         ui->label_info_ascii->setText("");
     });
 

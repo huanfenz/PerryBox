@@ -3,8 +3,8 @@
 /* 指定进制字符串 转 数字数组 */
 std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
 {
-    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC)) {
-        throw std::out_of_range("base must be DEC or HEX");
+    if ((base != BaseEnum::HEX) && (base != BaseEnum::DEC) && (base != BaseEnum::BIN)) {
+        throw std::out_of_range("base must be DEC, HEX or BIN");
     }
 
     std::vector<uint8_t> result;
