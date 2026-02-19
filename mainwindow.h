@@ -28,6 +28,7 @@ private:
     void asciiConverterPage();
     void timestampConverterPage();
     void crcCalculatorPage();
+    void regexTesterPage();
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

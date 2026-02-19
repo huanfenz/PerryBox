@@ -3,6 +3,7 @@
 #include "ascii_converter.h"
 #include "timestamp_converter.h"
 #include "crc_calculator.h"
+#include "regex_tester.h"
 #include <sstream>
 #include <iomanip>
 #include <QString>
@@ -374,22 +375,20 @@ void MainWindow::timestampConverterPage()
 void MainWindow::crcCalculatorPage()
 {
     connect(ui->btn_crc_calc, &QPushButton::clicked, this, [&](){
-        // 获取输入
         std::string inputStr = ui->pedit_crc_input->toPlainText().toStdString();
         std::vector<uint8_t> inputNums = baseStr2Nums(inputStr, BaseEnum::HEX);
 
-        // 获取crc模型
         int crcModelIndex = ui->cbox_crc_model->currentIndex();
 
         std::string res;
         switch (crcModelIndex)
         {
-            case 0: {// crc8
+            case 0: {
                 uint8_t value = calcCRC8(inputNums);
                 res = fmt::format("{:02X}", value);
                 break;
             }
-            case 1: {// crc32
+            case 1: {
                 uint32_t value = calcCRC32(inputNums);
                 res = fmt::format("{:08X}", value);
                 break;
@@ -400,6 +399,93 @@ void MainWindow::crcCalculatorPage()
         }
 
         ui->ledit_crc_result->setText(TO_QSTR(res));
+    });
+}
+
+void MainWindow::regexTesterPage()
+{
+    RegexTester& tester = RegexTester::getInstance();
+
+    connect(ui->btn_regex_match, &QPushButton::clicked, this, [&](){
+        ui->label_info_regex->setText("");
+
+        std::string pattern = ui->edit_regex_pattern->text().toStdString();
+        std::string text = ui->pedit_regex_input->toPlainText().toStdString();
+
+        tester.setPattern(pattern);
+        tester.setTestText(text);
+
+        std::regex::flag_type flags = std::regex::ECMAScript;
+        if (ui->cbox_regex_icase->isChecked()) {
+            flags |= std::regex::icase;
+        }
+        tester.setFlags(flags);
+
+        std::string errorMsg;
+        if (!tester.validatePattern(errorMsg)) {
+            ui->label_info_regex->setText(TO_QSTR(errorMsg));
+            ui->edit_regex_result->setPlainText("");
+            ui->label_regex_match_count->setText("匹配数：0");
+            return;
+        }
+
+        auto results = tester.match();
+        ui->edit_regex_result->setPlainText(TO_QSTR(tester.getResultString()));
+        ui->label_regex_match_count->setText(TO_QSTR(fmt::format("匹配数：{}", results.size())));
+    });
+
+    connect(ui->btn_regex_clear, &QPushButton::clicked, this, [&](){
+        ui->edit_regex_pattern->setText("");
+        ui->pedit_regex_input->setPlainText("");
+        ui->edit_regex_result->setPlainText("");
+        ui->edit_regex_replace->setText("");
+        ui->edit_regex_replace_result->setPlainText("");
+        ui->label_info_regex->setText("");
+        ui->label_regex_match_count->setText("匹配数：0");
+        ui->cbox_regex_preset->setCurrentIndex(0);
+    });
+
+    connect(ui->btn_regex_replace, &QPushButton::clicked, this, [&](){
+        ui->label_info_regex->setText("");
+
+        std::string pattern = ui->edit_regex_pattern->text().toStdString();
+        std::string text = ui->pedit_regex_input->toPlainText().toStdString();
+        std::string replacement = ui->edit_regex_replace->text().toStdString();
+
+        if (pattern.empty()) {
+            ui->label_info_regex->setText("正则表达式不能为空");
+            return;
+        }
+
+        if (text.empty()) {
+            ui->label_info_regex->setText("测试文本不能为空");
+            return;
+        }
+
+        tester.setPattern(pattern);
+        tester.setTestText(text);
+
+        std::regex::flag_type flags = std::regex::ECMAScript;
+        if (ui->cbox_regex_icase->isChecked()) {
+            flags |= std::regex::icase;
+        }
+        tester.setFlags(flags);
+
+        std::string errorMsg;
+        if (!tester.validatePattern(errorMsg)) {
+            ui->label_info_regex->setText(TO_QSTR(errorMsg));
+            return;
+        }
+
+        std::string result = tester.replace(replacement);
+        ui->edit_regex_replace_result->setPlainText(TO_QSTR(result));
+    });
+
+    connect(ui->cbox_regex_preset, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int index){
+        if (index > 0) {
+            std::string preset = RegexTester::getPresetPattern(index);
+            ui->edit_regex_pattern->setText(TO_QSTR(preset));
+        }
     });
 }
 
@@ -432,6 +518,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // CRC 计算器页面
     crcCalculatorPage();
+
+    // 正则测试页面
+    regexTesterPage();
 }
 
 MainWindow::~MainWindow()

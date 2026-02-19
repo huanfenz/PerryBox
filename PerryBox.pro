@@ -25,6 +25,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     perry_common.cpp \
+    regex_tester.cpp \
     timestamp_converter.cpp
 
 HEADERS += \
@@ -32,6 +33,7 @@ HEADERS += \
     crc_calculator.h \
     mainwindow.h \
     perry_common.h \
+    regex_tester.h \
     timestamp_converter.h
 
 FORMS += \
