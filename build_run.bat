@@ -8,6 +8,15 @@ set PATH=%MingwPath%\bin;%QtPath%\bin;%PATH%
 set BUILD_TYPE=debug
 if /I "%1"=="release" set BUILD_TYPE=release
 
+tasklist /FI "IMAGENAME eq PerryBox.exe" 2>NUL | find /I "PerryBox.exe" >NUL
+if errorlevel 1 (
+    echo PerryBox.exe is not running.
+) else (
+    echo Killing PerryBox.exe...
+    taskkill /F /IM PerryBox.exe >NUL 2>&1
+    timeout /t 1 >NUL
+)
+
 if not exist build mkdir build
 cd build
 
