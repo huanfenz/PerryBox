@@ -169,7 +169,7 @@ MIT License
 
 - 作者: Perry
 - 项目主页: [GitHub Repository]
-- 邮箱: perry@example.com
+- 邮箱: huanfenz@qq.com
 
 ---
 
