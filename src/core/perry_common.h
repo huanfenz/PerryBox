@@ -1,13 +1,9 @@
 #ifndef PERRY_COMMON_H
 #define PERRY_COMMON_H
 
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <sstream>
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <fmt/format.h>
 
 enum class BaseEnum : uint8_t {
     BIN = 2,
@@ -18,5 +14,9 @@ enum class BaseEnum : uint8_t {
 };
 
 extern std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base);
+
+/* 校验进制字符串格式：空格分隔、每组位数不超过该进制单字节上限。
+   空串合法；ASCII 进制不做限制，恒为 true。 */
+extern bool isValidBaseStr(const std::string& str, BaseEnum base);
 
 #endif // PERRY_COMMON_H

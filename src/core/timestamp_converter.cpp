@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <sstream>
 #include <ctime>
-#include <QDebug>
 #include <regex>
 
 namespace perry {
@@ -31,7 +30,6 @@ namespace perry {
 
         // 如果格式不匹配，直接返回 false
         if (!std::regex_match(input, match, pattern)) {
-            qDebug() << "格式不匹配";
             return false;
         }
 
@@ -46,7 +44,6 @@ namespace perry {
         // 检查时间的合法性
         if (year < 0 || month < 1 || month > 12 || day < 1 || hour < 0 || hour > 23 ||
             minute < 0 || minute > 59 || second < 0 || second > 59) {
-            qDebug() << "年月日超过范围";
             return false;
         }
 
@@ -56,13 +53,11 @@ namespace perry {
 
         // 检查天数是否在该月范围内
         if (day > daysInMonth[month - 1]) {
-            qDebug() << "日超过范围";
             return false;
         }
 
         // 检查1970年
         if (year < 1970) {
-            qDebug() << "年小于1970";
             return false;
         }
 
@@ -88,29 +83,31 @@ namespace perry {
         return oss.str();
     }
 
-    std::time_t localtime2Timestamp(const std::string& timeString)\
+    bool localtime2Timestamp(const std::string& timeString, std::time_t& out)
     {
         std::tm tm = {};
         std::istringstream iss(timeString);
         iss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
         if (iss.fail()) {
-            throw std::invalid_argument("Invalid time format");
+            return false;
         }
-        return std::mktime(&tm);
+        out = std::mktime(&tm);
+        return out >= 0;
     }
 
-    std::time_t utctime2Timestamp(const std::string& timeString)
+    bool utctime2Timestamp(const std::string& timeString, std::time_t& out)
     {
         std::tm tm = {};
         std::istringstream iss(timeString);
         iss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
         if (iss.fail()) {
-            throw std::invalid_argument("Invalid time format");
+            return false;
         }
 #if defined(_WIN32)
-        return _mkgmtime(&tm);
+        out = _mkgmtime(&tm);
 #else
-        return timegm(&tm);
+        out = timegm(&tm);
 #endif
+        return out >= 0;
     }
 }

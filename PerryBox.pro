@@ -19,25 +19,44 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += \
+    $$PWD/src \
+    $$PWD/src/core \
+    $$PWD/src/ui
+
 SOURCES += \
-    ascii_converter.cpp \
-    crc_calculator.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    perry_common.cpp \
-    regex_tester.cpp \
-    timestamp_converter.cpp
+    src/core/ascii_converter.cpp \
+    src/core/crc_calculator.cpp \
+    src/core/perry_common.cpp \
+    src/core/regex_tester.cpp \
+    src/core/timestamp_converter.cpp \
+    src/main.cpp \
+    src/ui/ascii_converter_page.cpp \
+    src/ui/byte_warn_highlighter.cpp \
+    src/ui/crc_calculator_page.cpp \
+    src/ui/mainwindow.cpp \
+    src/ui/regex_tester_page.cpp \
+    src/ui/timestamp_converter_page.cpp
 
 HEADERS += \
-    ascii_converter.h \
-    crc_calculator.h \
-    mainwindow.h \
-    perry_common.h \
-    regex_tester.h \
-    timestamp_converter.h
+    src/core/ascii_converter.h \
+    src/core/crc_calculator.h \
+    src/core/perry_common.h \
+    src/core/regex_tester.h \
+    src/core/timestamp_converter.h \
+    src/ui/ascii_converter_page.h \
+    src/ui/byte_warn_highlighter.h \
+    src/ui/crc_calculator_page.h \
+    src/ui/mainwindow.h \
+    src/ui/regex_tester_page.h \
+    src/ui/timestamp_converter_page.h
 
 FORMS += \
-    mainwindow.ui
+    src/ui/ascii_converter_page.ui \
+    src/ui/crc_calculator_page.ui \
+    src/ui/mainwindow.ui \
+    src/ui/regex_tester_page.ui \
+    src/ui/timestamp_converter_page.ui
 
 TRANSLATIONS += \
     PerryBox_zh_CN.ts

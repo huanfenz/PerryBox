@@ -79,16 +79,21 @@ debug\PerryBox.exe
 
 ```
 PerryBox/
-├── 源代码
+├── src/
 │   ├── main.cpp                    # 程序入口
-│   ├── mainwindow.h/.cpp           # 主窗口逻辑
-│   ├── ascii_converter.h/.cpp      # ASCII 转换模块
-│   ├── timestamp_converter.h/.cpp  # 时间戳转换模块
-│   ├── crc_calculator.h/.cpp       # CRC 计算模块
-│   ├── regex_tester.h/.cpp         # 正则测试模块
-│   └── perry_common.h/.cpp         # 公用工具函数
-├── UI 设计
-│   └── mainwindow.ui               # Qt UI 设计文件
+│   ├── core/                       # 纯逻辑层（不依赖 Qt）
+│   │   ├── ascii_converter.h/.cpp      # ASCII 转换（无状态转换函数）
+│   │   ├── timestamp_converter.h/.cpp  # 时间戳转换
+│   │   ├── crc_calculator.h/.cpp       # CRC 计算（参数模型表驱动）
+│   │   ├── regex_tester.h/.cpp         # 正则匹配/替换/预设表
+│   │   └── perry_common.h/.cpp         # 公用工具函数
+│   └── ui/                         # 界面层
+│       ├── mainwindow.h/.cpp/.ui        # 主窗口：组装各标签页
+│       ├── ascii_converter_page.*       # ASCII 转换页
+│       ├── timestamp_converter_page.*   # 时间戳转换页
+│       ├── crc_calculator_page.*        # CRC 校验页
+│       ├── regex_tester_page.*          # 正则测试页
+│       └── byte_warn_highlighter.h/.cpp # 不可打印字符高亮器
 ├── 资源
 │   ├── res.qrc                     # Qt 资源文件
 │   └── BirdIcon4.ico               # 应用图标
@@ -126,10 +131,10 @@ PerryBox/
 
 ### 添加新功能
 
-1. 创建新的头文件和实现文件（如 `new_feature.h/.cpp`）
-2. 在 `PerryBox.pro` 中添加源文件路径
-3. 在 `mainwindow.ui` 中添加对应的 UI 组件
-4. 在 `mainwindow.cpp` 中实现功能逻辑
+1. 纯逻辑放入 `src/core/`（新建 `new_feature.h/.cpp`，提供无状态转换函数）
+2. 界面放入 `src/ui/`（新建 `new_feature_page.h/.cpp/.ui`，参照现有页面）
+3. 在 `PerryBox.pro` 中注册新增的源文件和 UI 文件
+4. 在 `mainwindow.cpp` 中 `addTab(new NewFeaturePage(this), ...)` 挂载新标签页
 5. 连接信号和槽函数
 
 ### 代码风格

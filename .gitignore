@@ -80,3 +80,6 @@ moc_predefs.h
 *.dll
 *.exe
 
+
+# Build logs
+*.log
