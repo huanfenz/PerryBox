@@ -5,6 +5,7 @@ PerryBox — 基于 Qt 5.14.2 的桌面开发者工具箱（ASCII/时间戳/CRC/
 ## 构建
 
 - `build_run.bat` — 构建并以 debug 模式启动；`build_run.bat release` 构建 release 版本。构建前会先杀掉正在运行的 `PerryBox.exe`。
+- `make_installer.bat` — 一键制作发布安装包：release 构建 → 手动拷贝 Qt 运行库（`windeployqt` 对本机这套 Qt 会误判为 debug 构建而拒绝部署，故在 bat 中固定拷贝 Qt5Core/Gui/Widgets.dll、MinGW 运行时 DLL 与 `platforms`/`styles` 插件）→ Inno Setup 编译 `installer/perrybox.iss`，产出单文件安装包 `dist/PerryBox-Setup-<版本>.exe`。依赖 Inno Setup 6（路径硬编码 `D:\Program Files (x86)\Inno Setup 6`）；简中安装界面语言包为 `installer/ChineseSimplified.isl`（官方翻译，6.5.0+）。发版时需同步两处版本号：`src/ui/mainwindow.h` 的 `APP_VERSION` 与 `installer/perrybox.iss` 的 `MyAppVersion`。
 - qmake **不会**自动收集源文件。新增的 `.cpp`/`.h`/`.ui` 文件必须手动加入 `PerryBox.pro`（`SOURCES`/`HEADERS`/`FORMS`），否则不会参与编译。
 - Qt 路径硬编码为 `D:\Qt\Qt5.14.2`（mingw73_64 / mingw730_64），写在 `build_run.bat` 和 `.vscode/c_cpp_properties.json` 中。Qt 不在该路径下会导致构建失败。
 - `ui_*.h`、`moc_*.cpp`、`qrc_*.cpp` 由 uic/moc 生成到 `build/` 目录，已被 gitignore。切勿编辑它们；应改对应的 `.ui` 文件。
