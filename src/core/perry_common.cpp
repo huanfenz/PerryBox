@@ -15,9 +15,17 @@ std::vector<uint8_t> baseStr2Nums(const std::string& req, BaseEnum base)
     std::string each;
 
     while (ss >> each) {
+        /* std::stoi(strtol) 在 base=2 时不会消耗 0b 前缀（仅 base=16 消耗 0x），
+           需先剥离 0x/0b 前缀，否则 "0b00110001" 只会解析出前导 0 */
+        std::string token = each;
+        if (token.size() > 2 && token[0] == '0'
+                && (token[1] == 'x' || token[1] == 'X'
+                    || token[1] == 'b' || token[1] == 'B')) {
+            token.erase(0, 2);
+        }
         uint8_t value =
                 static_cast<uint8_t>(
-                    std::stoi(each, nullptr, static_cast<int>(base))
+                    std::stoi(token, nullptr, static_cast<int>(base))
                 );
         result.push_back(value);
     }
