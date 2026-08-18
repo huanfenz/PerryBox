@@ -66,6 +66,9 @@ Thumbs.db
 # Build directory
 build/
 
+# Installer output
+dist/
+
 # VS Code config
 .vscode/
 
@@ -80,3 +83,6 @@ moc_predefs.h
 *.dll
 *.exe
 
+
+# Build logs
+*.log
