@@ -50,18 +50,8 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QCheckBox" name="cbox_regex_global">
-        <property name="text">
-         <string>全局匹配</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cbox_regex_icase">
+       <item>
+        <widget class="QCheckBox" name="cbox_regex_icase">
         <property name="text">
          <string>忽略大小写</string>
         </property>
