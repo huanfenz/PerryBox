@@ -7,7 +7,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-#define APP_VERSION "0.6.0"
+#define APP_VERSION "1.0.0"
 
 class MainWindow : public QMainWindow
 {
