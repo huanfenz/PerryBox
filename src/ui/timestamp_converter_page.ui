@@ -20,7 +20,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="edit_timestamp"/>
+       <widget class="QLineEdit" name="edit_timestamp">
+        <property name="placeholderText">
+         <string>输入时间戳（秒），例如：1724000000</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="2">
        <widget class="QPushButton" name="btn_timestamp">
@@ -30,7 +34,11 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="edit_localtime"/>
+       <widget class="QLineEdit" name="edit_localtime">
+        <property name="placeholderText">
+         <string>输入本地时间，例如：2026-08-18 12:00:00</string>
+        </property>
+       </widget>
       </item>
       <item row="4" column="2">
        <widget class="QPushButton" name="btn_localtime">
@@ -40,7 +48,11 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="edit_utctime"/>
+       <widget class="QLineEdit" name="edit_utctime">
+        <property name="placeholderText">
+         <string>输入UTC时间，例如：2026-08-18 12:00:00</string>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_time_utc">

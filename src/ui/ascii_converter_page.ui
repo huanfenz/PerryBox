@@ -31,16 +31,19 @@
    </item>
    <item>
     <widget class="QTextEdit" name="edit_ascii">
-     <property name="font">
-      <font>
-       <family>Consolas</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="acceptRichText">
-      <bool>false</bool>
-     </property>
-    </widget>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+      <property name="placeholderText">
+       <string>输入ASCII文本，例如：Hello</string>
+      </property>
+     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_hex_text">
@@ -57,16 +60,19 @@
    </item>
    <item>
     <widget class="QTextEdit" name="edit_hex">
-     <property name="font">
-      <font>
-       <family>Consolas</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="acceptRichText">
-      <bool>false</bool>
-     </property>
-    </widget>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+      <property name="placeholderText">
+       <string>输入十六进制，空格分隔，例如：31 32 33</string>
+      </property>
+     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_dec_text">
@@ -83,16 +89,19 @@
    </item>
    <item>
     <widget class="QTextEdit" name="edit_dec">
-     <property name="font">
-      <font>
-       <family>Consolas</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="acceptRichText">
-      <bool>false</bool>
-     </property>
-    </widget>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+      <property name="placeholderText">
+       <string>输入十进制，空格分隔，例如：49 50 51</string>
+      </property>
+     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_bin">
@@ -109,16 +118,19 @@
    </item>
    <item>
     <widget class="QTextEdit" name="edit_bin">
-     <property name="font">
-      <font>
-       <family>Consolas</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="acceptRichText">
-      <bool>false</bool>
-     </property>
-    </widget>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+      <property name="placeholderText">
+       <string>输入二进制，空格分隔，例如：00110001 00110010</string>
+      </property>
+     </widget>
    </item>
    <item>
     <widget class="QWidget" name="widget_char_size" native="true">

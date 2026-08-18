@@ -24,6 +24,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="placeholderText">
+      <string>输入十六进制数据，空格分隔，例如：31 32 33</string>
+     </property>
     </widget>
    </item>
    <item>
